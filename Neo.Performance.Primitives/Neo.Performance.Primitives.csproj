@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageProjectUrl>https://github.com/search-for-the-one/Neo.Performance.Primitives</PackageProjectUrl>
+    <Authors>Neo</Authors>
+    <Company>Neo</Company>
+    <PackageId>Neo2.Performance.Primitives</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+  </ItemGroup>
+
+</Project>

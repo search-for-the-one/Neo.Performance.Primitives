@@ -7,7 +7,7 @@
     <Authors>Neo</Authors>
     <Company>Neo</Company>
     <PackageId>Neo2.Performance.Primitives</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

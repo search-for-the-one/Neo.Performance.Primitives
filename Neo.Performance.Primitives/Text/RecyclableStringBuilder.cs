@@ -75,6 +75,27 @@ namespace Neo.Performance.Primitives.Text
             return this;
         }
 
+        public RecyclableStringBuilder Append(char c, int repeatCount)
+        {
+            VerifyNotDisposed();
+
+            if (repeatCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(repeatCount));
+
+            while (repeatCount-- > 0)
+            {
+                var chunkOffset = Length % ChunkSize;
+                if (chunkOffset == 0)
+                    RentChunk();
+
+                var chunk = chunks.Last();
+                chunk[chunkOffset] = c;
+                Length++;
+            }
+
+            return this;
+        }
+
         public RecyclableStringBuilder Append(string s)
         {
             VerifyNotDisposed();
@@ -83,7 +104,19 @@ namespace Neo.Performance.Primitives.Text
             if (len == 0)
                 return this;
 
-            Append(s.AsSpan());
+            AppendInternal(s.AsSpan());
+            return this;
+        }
+
+        public RecyclableStringBuilder Append(ReadOnlySpan<char> s)
+        {
+            VerifyNotDisposed();
+
+            var len = s.Length;
+            if (len == 0)
+                return this;
+
+            AppendInternal(s);
             return this;
         }
 
@@ -102,7 +135,7 @@ namespace Neo.Performance.Primitives.Text
             foreach (var chunk in other.chunks)
             {
                 var count = Math.Min(ChunkSize, remainder);
-                Append(chunk, count);
+                AppendInternal(chunk, count);
                 remainder -= count;
             }
 
@@ -131,7 +164,7 @@ namespace Neo.Performance.Primitives.Text
             return result;
         }
 
-        private void Append(ReadOnlySpan<char> s, int len = -1)
+        private void AppendInternal(ReadOnlySpan<char> s, int len = -1)
         {
             var sourceIndex = 0;
             var remainder = len < 0 ? s.Length : len;

@@ -8,7 +8,7 @@ WORKDIR /opt
 
 RUN sed -i 's/\\/\//g' Neo.Performance.Primitives.sln
 RUN dotnet test -c Release -v n
-RUN dotnet publish -c Release
+RUN dotnet pack -c Release
 
 WORKDIR /opt/Neo.Performance.Primitives/bin/Release
 RUN cp *.nupkg /artifacts/

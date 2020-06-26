@@ -54,13 +54,11 @@ namespace Neo.Performance.Primitives.Tests
         [Test]
         public void AlreadyInUseWithoutScopeTest()
         {
-            IDisposable shared = null;
             Assert.Throws<InvalidOperationException>(() =>
             {
-                shared = ThreadLocalSharedSpan<Foo>.Get<int>(5, out _);
-                ThreadLocalSharedSpan<Foo>.Get<int>(10, out _);
+                using (ThreadLocalSharedSpan<Foo>.Get<int>(5, out _))
+                    ThreadLocalSharedSpan<Foo>.Get<int>(10, out _);
             });
-            shared.Dispose();
         }
 
         [Test]
@@ -175,13 +173,11 @@ namespace Neo.Performance.Primitives.Tests
         [Test]
         public void TwoInputsAlreadyInUseWithoutScopeTest()
         {
-            IDisposable shared = null;
             Assert.Throws<InvalidOperationException>(() =>
             {
-                shared = ThreadLocalSharedSpan<Foo>.Get<int, Foo>(5, out _, 1, out _);
-                ThreadLocalSharedSpan<Foo>.Get<int, Bar>(10, out _, 2, out _);
+                using (ThreadLocalSharedSpan<Foo>.Get<int, Foo>(5, out _, 1, out _))
+                    ThreadLocalSharedSpan<Foo>.Get<int, Bar>(10, out _, 2, out _);
             });
-            shared.Dispose();
         }
 
         [Test]
@@ -334,13 +330,11 @@ namespace Neo.Performance.Primitives.Tests
         [Test]
         public void ThreeInputsAlreadyInUseWithoutScopeTest()
         {
-            IDisposable shared = null;
             Assert.Throws<InvalidOperationException>(() =>
             {
-                shared = ThreadLocalSharedSpan<Foo>.Get<int, Foo, double>(5, out _, 1, out _, 3, out _);
-                ThreadLocalSharedSpan<Foo>.Get<int, Bar, char>(10, out _, 2, out _, 4, out _);
+                using (ThreadLocalSharedSpan<Foo>.Get<int, Foo, double>(5, out _, 1, out _, 3, out _))
+                    ThreadLocalSharedSpan<Foo>.Get<int, Bar, char>(10, out _, 2, out _, 4, out _);
             });
-            shared.Dispose();
         }
 
         [Test]
@@ -370,8 +364,7 @@ namespace Neo.Performance.Primitives.Tests
         [Test]
         public void ThreeInputsZeroCountTest()
         {
-            using (ThreadLocalSharedSpan<Foo>.Get<char, byte, double>(0, out var empty, 0, out var empty2, 0,
-                out var empty3))
+            using (ThreadLocalSharedSpan<Foo>.Get<char, byte, double>(0, out var empty, 0, out var empty2, 0, out var empty3))
             {
                 Assert.AreEqual(Span<char>.Empty.Length, empty.Length);
                 Assert.AreEqual(Span<byte>.Empty.Length, empty2.Length);

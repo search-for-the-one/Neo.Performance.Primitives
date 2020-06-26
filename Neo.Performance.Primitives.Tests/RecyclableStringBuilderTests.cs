@@ -8,6 +8,34 @@ namespace Neo.Performance.Primitives.Tests
 {
     public class RecyclableStringBuilderTests
     {
+        [Test]
+        public void AppendSpanTest()
+        {
+            const string foo = "Foo";
+            using var builder = new RecyclableStringBuilder();
+            builder.Append(string.Empty.AsSpan());
+            builder.Append(foo.AsSpan());
+            Assert.AreEqual(foo, builder.ToString());
+        }
+
+        [Test]
+        public void RepeatCharAppendTest()
+        {
+            using var builder = new RecyclableStringBuilder();
+            builder.Append('a', 512);
+            Assert.AreEqual(new string('a', 512), builder.ToString());
+        }
+
+        [Test]
+        public void RepeatCharAppendNegativeCountTest()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                using var builder = new RecyclableStringBuilder();
+                builder.Append('a', -1);
+            });
+        }
+
         [TestCaseSource(nameof(AppendCases))]
         public void AppendTests(params object[] values)
         {
